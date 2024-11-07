@@ -3,7 +3,7 @@
 /* BASIC */
 
 html {
-  background-image: url('../images/va1yusha_Generate.png');
+  background-image: url('../img/va1yusha_Generate.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -83,7 +83,7 @@ footer {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 100%;
-  max-width: 400px;
+  max-width: fit-content;
 }
 
 #formContent h2 {
@@ -230,4 +230,62 @@ footer {
 
 .messages li.error {
     background-color: #f44336;
+}
+
+/* REQUESTS STYLES */
+
+.requests-list {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.request-item {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 500px;
+  text-align: center;
+}
+
+.request-item h3 {
+  margin-top: 0;
+}
+
+.request-item p {
+  margin: 5px 0;
+}
+
+.request-image {
+  max-width: 100%;
+  height: auto;
+  margin-top: 10px;
+}
+
+.underlineHover {
+  display: inline-block;
+  margin-top: 10px;
+  color: #333;
+  text-decoration: none;
+  position: relative;
+}
+
+.underlineHover:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #333;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.underlineHover:hover:after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }
