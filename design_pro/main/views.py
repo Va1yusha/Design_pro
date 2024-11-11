@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, LoginForm, RequestForm
+from .forms import RegisterForm, LoginForm, RequestForm, StatusChangeForm
 from .models import Request
 
 def register_view(request):
@@ -68,4 +68,28 @@ def delete_request(request, request_id):
         messages.error(request, 'Cannot delete a request that is not in "New" status.')
     return redirect('view_requests')
 
-# Create your views here.
+@login_required
+def change_status(request, request_id):
+    request_instance = get_object_or_404(Request, id=request_id)
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            form = StatusChangeForm(request.POST, instance=request_instance)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Status changed successfully.')
+                return redirect('view_all_requests')
+        else:
+            form = StatusChangeForm(instance=request_instance)
+        return render(request, 'change_status.html', {'form': form, 'request': request_instance})
+    else:
+        messages.error(request, 'You do not have permission to change the status of this request.')
+        return redirect('view_requests')
+
+@login_required
+def view_all_requests(request):
+    if request.user.is_superuser:
+        requests = Request.objects.all().order_by('-created_at')
+        return render(request, 'view_all_requests.html', {'requests': requests})
+    else:
+        messages.error(request, 'You do not have permission to view all requests.')
+        return redirect('view_requests')

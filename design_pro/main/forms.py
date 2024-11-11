@@ -24,3 +24,8 @@ class RequestForm(forms.ModelForm):
     class Meta:
         model = Request
         fields = ['title', 'description', 'category', 'image']
+
+class StatusChangeForm(forms.ModelForm):
+    class Meta:
+        model = Request
+        fields = ['status']
