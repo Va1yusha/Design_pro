@@ -33,7 +33,12 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 def home_view(request):
-    return render(request, 'home.html')
+    completed_requests = Request.objects.filter(status='Выполнено').order_by('-created_at')[:4]
+    accepted_requests_count = Request.objects.filter(status='Принято в работу').count()
+    return render(request, 'home.html', {
+        'completed_requests': completed_requests,
+        'accepted_requests_count': accepted_requests_count
+    })
 
 def logout_view(request):
     logout(request)
