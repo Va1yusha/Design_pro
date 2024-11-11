@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Request
+from .models import Request, Category
+
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -29,3 +30,8 @@ class StatusChangeForm(forms.ModelForm):
     class Meta:
         model = Request
         fields = ['status']
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']

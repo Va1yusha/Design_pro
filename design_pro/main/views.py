@@ -2,8 +2,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, LoginForm, RequestForm, StatusChangeForm
-from .models import Request
+from .forms import RegisterForm, LoginForm, RequestForm, StatusChangeForm, CategoryForm
+from .models import Request, Category
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -93,3 +94,56 @@ def view_all_requests(request):
     else:
         messages.error(request, 'You do not have permission to view all requests.')
         return redirect('view_requests')
+
+@login_required
+def create_category(request):
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            form = CategoryForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Category created successfully.')
+                return redirect('view_categories')
+        else:
+            form = CategoryForm()
+        return render(request, 'create_category.html', {'form': form})
+    else:
+        messages.error(request, 'You do not have permission to create a category.')
+        return redirect('home')
+
+@login_required
+def view_categories(request):
+    if request.user.is_superuser:
+        categories = Category.objects.all().order_by('name')
+        return render(request, 'view_categories.html', {'categories': categories})
+    else:
+        messages.error(request, 'You do not have permission to view categories.')
+        return redirect('home')
+
+@login_required
+def edit_category(request, category_id):
+    if request.user.is_superuser:
+        category = get_object_or_404(Category, id=category_id)
+        if request.method == 'POST':
+            form = CategoryForm(request.POST, instance=category)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Category updated successfully.')
+                return redirect('view_categories')
+        else:
+            form = CategoryForm(instance=category)
+        return render(request, 'edit_category.html', {'form': form, 'category': category})
+    else:
+        messages.error(request, 'You do not have permission to edit this category.')
+        return redirect('view_categories')
+
+@login_required
+def delete_category(request, category_id):
+    if request.user.is_superuser:
+        category = get_object_or_404(Category, id=category_id)
+        category.delete()
+        messages.success(request, 'Category deleted successfully.')
+        return redirect('view_categories')
+    else:
+        messages.error(request, 'You do not have permission to delete this category.')
+        return redirect('view_categories')
